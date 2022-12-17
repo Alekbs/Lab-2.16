@@ -11,15 +11,15 @@ def add():
     # Запросить данные о работнике.
     name = input("Фамилия и инициалы? ")
     groop = input("Группа? ")
-    marks = []
-    for i in range(5):
-        marks.append(int(input("Введите оценки по 5 предметам? ")))
+    marks = [
+        int(i) for i in input("Введите оценки по 5 предметам через пробел: ").split()
+    ]
 
     # Создать словарь.
     return {
-        'name': name,
-        'groop': groop,
-        'marks': marks,
+        "name": name,
+        "groop": groop,
+        "marks": marks,
     }
 
 
@@ -36,28 +36,18 @@ def help():
 
 def list(students):
     # Заголовок таблицы.
-    line = '+-{}-+-{}-+-{}-+'.format(
-        '-' * 30,
-        '-' * 20,
-        '-' * 9
-    )
+    line = "+-{}-+-{}-+-{}-+".format("-" * 30, "-" * 20, "-" * 9)
     print(line)
-    print(
-        '| {:^30} | {:^20} | {:^9} |'.format(
-            "Ф.И.О.",
-            "Группа",
-            "Оценки"
-        )
-    )
+    print("| {:^30} | {:^20} | {:^9} |".format("Ф.И.О.", "Группа", "Оценки"))
     print(line)
 
     # Вывести данные о всех студентах.
     for idx, student in enumerate(students, 1):
         print(
-            '| {:<30} | {:<20} | {:>7} |'.format(
-                student.get('name', ''),
-                student.get('groop', ''),
-                ','.join(map(str, student['marks']))
+            "| {:<30} | {:<20} | {:>7} |".format(
+                student.get("name", ""),
+                student.get("groop", ""),
+                ",".join(map(str, student["marks"])),
             )
         )
     print(line)
@@ -66,7 +56,7 @@ def list(students):
 def select(students):
     result = []
     for idx, student in enumerate(students, 1):
-        res = all(int(x) > 3 for x in student['marks'])
+        res = all(int(x) > 3 for x in student["marks"])
         if res:
             result.append(student)
     return result
@@ -92,21 +82,23 @@ def main():
         command = input(">>> ").lower()
 
         # Выполнить действие в соответствие с командой.
-        if command == 'exit':
+        if command == "exit":
             break
 
-        elif command == 'add':
+        elif command == "add":
             student = add()
             # Добавить словарь в список.
             students.append(student)
             # Отсортировать список в случае необходимости.
             if len(students) > 1:
-                students.sort(key=lambda item: sum(student['marks']) / len(student['marks']))
+                students.sort(
+                    key=lambda item: sum(student["marks"]) / len(student["marks"])
+                )
 
-        elif command == 'list':
+        elif command == "list":
             list(students)
 
-        elif command == 'select':
+        elif command == "select":
             list(select(students))
 
         elif command.startswith("save "):
@@ -124,11 +116,11 @@ def main():
             # Сохранить данные в файл с заданным именем.
             students = load_students(file_name)
 
-        elif command == 'help':
+        elif command == "help":
             help()
         else:
             print(f"Неизвестная команда {command}", file=sys.stderr)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
